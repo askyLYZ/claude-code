@@ -1,6 +1,5 @@
-import OpenAI from 'openai'
+import type OpenAI from 'openai
 import { getProxyFetchOptions } from 'src/utils/proxy.js'
-import { isEnvTruthy } from 'src/utils/envUtils.js'
 
 /**
  * Environment variables:
@@ -13,13 +12,14 @@ import { isEnvTruthy } from 'src/utils/envUtils.js'
 
 let cachedClient: OpenAI | null = null
 
-export function getOpenAIClient(options?: {
+export async function getOpenAIClient(options?: {  
   maxRetries?: number
   fetchOverride?: typeof fetch
   source?: string
-}): OpenAI {
+}): Promise<OpenAI> {
   if (cachedClient) return cachedClient
-
+	
+  const { default: OpenAI } = await import('openai') 
   const apiKey = process.env.OPENAI_API_KEY || ''
   const baseURL = process.env.OPENAI_BASE_URL
 
